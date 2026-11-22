@@ -1,8 +1,18 @@
 # Changelog
 
+## 0.2.0
+
+New names, same library. Nothing else changed.
+
+- **Maven coordinates:** `io.github.rhino-lens:rhino-lens` (was `io.github.rhino-lens:batik-js-lens`).
+- **Java package:** `io.github.rhinolens` (was `io.github.rhinolens.lens`): `import io.github.rhinolens.Lens;`. Logger names follow: `io.github.rhinolens` and `io.github.rhinolens.changes`.
+- **Rhino dependency:** `io.github.rhino-lens:batik-js:1.7` (the same byte-identical jar, first published as `io.github.rhino-lens:batik-js-lens-base:1.7`).
+- **Moving up from 0.1.0:** change the dependency, then replace `io.github.rhinolens.lens` with `io.github.rhinolens` in imports and logging configuration.
+- Application classes in packages below `io.github.rhinolens` (e.g. `io.github.rhinolens.myapp`) are observed; only Lens's own package is skipped.
+
 ## 0.1.0 (2026-11-22)
 
-First version.
+First version, published as `io.github.rhino-lens:batik-js-lens:0.1.0` (package `io.github.rhinolens.lens`).
 
 - **Records what scripts do to Java objects,** with rule name, line, target object, path, and old → new value:
   - property changes through setters, `=` on bean properties, and public fields
@@ -21,4 +31,4 @@ First version.
   - quiet blocks: `lens.quietly`, `Lens.unobserved`
   - a per-execution event cap
 - **Configuration:** old-value modes (`ALWAYS`, `SIMPLE_TYPES`, `NONE`), service policies, id resolver, exclusions, limits, and line numbers in compiled mode.
-- **Rhino:** no Rhino classes are changed. It runs on Batik 1.7's Rhino, declared as a `provided` dependency so the application's own copy (`batik-js-lens-base` 1.7 or Apache's identical `batik-js` 1.7) is used and never duplicated. Java 11+.
+- **Rhino:** no Rhino classes are changed. It runs on Batik 1.7's Rhino, declared as a `provided` dependency so the application's own copy (`io.github.rhino-lens:batik-js-lens-base` 1.7 or Apache's identical `org.apache.xmlgraphics:batik-js` 1.7) is used and never duplicated. Java 11+.

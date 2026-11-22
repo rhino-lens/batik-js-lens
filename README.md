@@ -1,8 +1,8 @@
-# batik-js-lens
+# rhino-lens
 
-Opt-in observability for JavaScript run on **Batik 1.7's Rhino** ([`batik-js-lens-base`](https://github.com/rhino-lens/batik-js-lens-base), a byte-identical rebuild of `org.apache.xmlgraphics:batik-js:1.7`).
+Opt-in observability for JavaScript run on **Batik 1.7's Rhino** ([`batik-js`](https://github.com/rhino-lens/batik-js), a byte-identical rebuild of `org.apache.xmlgraphics:batik-js:1.7`).
 
-When a script changes a Java object, your application normally can't see it: a persistence layer may later notice that an entity is dirty, but not **which rule, which line, which property, old value → new value**, or which services the rule called. batik-js-lens records exactly that, with no change to Rhino and one line of startup code.
+When a script changes a Java object, your application normally can't see it: a persistence layer may later notice that an entity is dirty, but not **which rule, which line, which property, old value → new value**, or which services the rule called. rhino-lens records exactly that, with no change to Rhino and one line of startup code.
 
 > Not affiliated with or endorsed by the Apache Software Foundation or Mozilla.
 
@@ -56,7 +56,7 @@ The full report as JSON is in [docs/examples/report-example.json](docs/examples/
 
 - **Scripts behave exactly as without Lens.** The real operation always runs unchanged, so scripts produce the same results and the same exceptions.
 - **Observation never breaks a script.** All of Lens's own code is failure-safe. A failure is flagged in `Lens.diagnostics()` and the script carries on. See [failure handling](docs/failure-handling.md).
-- **No Rhino class is changed.** Lens extends Rhino's own wrappers through its public extension points (`WrapFactory`, `ContextFactory.Listener`), so `batik-js-lens-base` stays byte-identical. See [how it works](docs/how-it-works.md).
+- **No Rhino class is changed.** Lens extends Rhino's own wrappers through its public extension points (`WrapFactory`, `ContextFactory.Listener`), so `batik-js` stays byte-identical. See [how it works](docs/how-it-works.md).
 - **No loops.** Reading reports, listeners, and writing reports into observed objects can't cascade. See [loop safety](docs/loop-safety.md).
 - **Works in both modes:** compiled (optimization 0–9) and interpreted (-1). It's tested the way rule engines run scripts: `Context.enter()`, Contexts reused per thread, shared library scopes, Java objects and services put straight into the scope.
 
@@ -75,24 +75,24 @@ The full report as JSON is in [docs/examples/report-example.json](docs/examples/
 | [EclipseLink](docs/integration/eclipselink.md) · [Spring](docs/integration/spring.md) | Integration guides |
 | [API reference](docs/api/README.md) | Every public type |
 
-Javadoc: **[rhino-lens.github.io/batik-js-lens](https://rhino-lens.github.io/batik-js-lens/)** (also built with `mvn javadoc:javadoc` and shipped in the `-javadoc.jar`).
+Javadoc: **[rhino-lens.github.io/rhino-lens](https://rhino-lens.github.io/rhino-lens/)** (also built with `mvn javadoc:javadoc` and shipped in the `-javadoc.jar`).
 
 ## Compatibility
 
 - **Java 11 or newer** (the library is compiled with `--release 11`).
-- **Rhino:** Batik 1.7's Rhino, which your project provides: [`batik-js-lens-base:1.7`](https://github.com/rhino-lens/batik-js-lens-base) or Apache's identical `org.apache.xmlgraphics:batik-js:1.7`. Lens declares it as `provided`, so it never adds a second copy. It has no other dependencies.
-- **Status:** version `0.1.0`, on [Maven Central](https://central.sonatype.com/artifact/io.github.rhino-lens/batik-js-lens).
+- **Rhino:** Batik 1.7's Rhino, which your project provides: [`io.github.rhino-lens:batik-js:1.7`](https://github.com/rhino-lens/batik-js) or Apache's identical `org.apache.xmlgraphics:batik-js:1.7`. Lens declares it as `provided`, so it never adds a second copy. It has no other dependencies.
+- **Status:** version `0.2.0`, on [Maven Central](https://central.sonatype.com/artifact/io.github.rhino-lens/rhino-lens). Version 0.1.0 was published as `io.github.rhino-lens:batik-js-lens` with package `io.github.rhinolens.lens`; see the [CHANGELOG](CHANGELOG.md) to move up.
 
 ```xml
 <dependency>
   <groupId>io.github.rhino-lens</groupId>
-  <artifactId>batik-js-lens</artifactId>
-  <version>0.1.0</version>
+  <artifactId>rhino-lens</artifactId>
+  <version>0.2.0</version>
 </dependency>
 <!-- plus your Rhino 1.7, if the project doesn't have it yet (either one, not both): -->
 <dependency>
   <groupId>io.github.rhino-lens</groupId>
-  <artifactId>batik-js-lens-base</artifactId>
+  <artifactId>batik-js</artifactId>
   <version>1.7</version>
 </dependency>
 ```

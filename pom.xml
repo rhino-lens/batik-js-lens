@@ -5,17 +5,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.rhino-lens</groupId>
-  <artifactId>batik-js-lens</artifactId>
-  <version>0.1.0</version>
+  <artifactId>rhino-lens</artifactId>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
-  <name>batik-js-lens</name>
+  <name>rhino-lens</name>
   <description>
-    Opt-in observability for scripts run on batik-js-lens-base (Batik 1.7's Rhino): which rule and
+    Opt-in observability for scripts run on batik-js (Batik 1.7's Rhino): which rule and
     line changed which Java property, old value to new value, which collections and services it
     touched, with a per-execution report. No Rhino classes are changed.
   </description>
-  <url>https://github.com/rhino-lens/batik-js-lens</url>
+  <url>https://github.com/rhino-lens/rhino-lens</url>
 
   <licenses>
     <license>
@@ -34,9 +34,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/rhino-lens/batik-js-lens.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/rhino-lens/batik-js-lens.git</developerConnection>
-    <url>https://github.com/rhino-lens/batik-js-lens</url>
+    <connection>scm:git:https://github.com/rhino-lens/rhino-lens.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rhino-lens/rhino-lens.git</developerConnection>
+    <url>https://github.com/rhino-lens/rhino-lens</url>
   </scm>
 
   <properties>
@@ -47,11 +47,11 @@
 
   <dependencies>
     <!-- Batik 1.7's Rhino, byte-identical; Lens extends its public classes and changes none.
-         "provided": the application brings its own Rhino 1.7 jar (batik-js-lens-base or Apache's
+         "provided": the application brings its own Rhino 1.7 jar (batik-js or Apache's
          identical org.apache.xmlgraphics:batik-js:1.7), so Lens never adds a second copy. -->
     <dependency>
       <groupId>io.github.rhino-lens</groupId>
-      <artifactId>batik-js-lens-base</artifactId>
+      <artifactId>batik-js</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
     </dependency>
@@ -128,8 +128,8 @@
         <configuration>
           <release>11</release>
           <excludePackageNames>org.mozilla.javascript</excludePackageNames>
-          <doctitle>batik-js-lens ${project.version} API</doctitle>
-          <windowtitle>batik-js-lens ${project.version} API</windowtitle>
+          <doctitle>rhino-lens ${project.version} API</doctitle>
+          <windowtitle>rhino-lens ${project.version} API</windowtitle>
           <links>
             <link>https://docs.oracle.com/en/java/javase/11/docs/api/</link>
           </links>

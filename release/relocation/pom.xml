@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Relocation only: this artifact was renamed to io.github.rhino-lens:rhino-lens:0.2.0. -->
+  <groupId>io.github.rhino-lens</groupId>
+  <artifactId>batik-js-lens</artifactId>
+  <version>0.1.1</version>
+  <packaging>pom</packaging>
+
+  <name>batik-js-lens (moved to rhino-lens)</name>
+  <description>Opt-in observability for scripts on Batik 1.7's Rhino. Renamed: use io.github.rhino-lens:rhino-lens:0.2.0.</description>
+  <url>https://github.com/rhino-lens/rhino-lens</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>Vothla</id>
+      <name>Santhosh Kumar S</name>
+      <url>https://github.com/Vothla</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/rhino-lens/rhino-lens.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rhino-lens/rhino-lens.git</developerConnection>
+    <url>https://github.com/rhino-lens/rhino-lens</url>
+  </scm>
+
+  <distributionManagement>
+    <relocation>
+      <groupId>io.github.rhino-lens</groupId>
+      <artifactId>rhino-lens</artifactId>
+      <version>0.2.0</version>
+      <message>Renamed to io.github.rhino-lens:rhino-lens:0.2.0 (same features; the Java package is now io.github.rhinolens).</message>
+    </relocation>
+  </distributionManagement>
+</project>

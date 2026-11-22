@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Make the Maven Central Portal upload bundle for batik-js-lens from a finished `mvn verify`.
+"""Make the Maven Central Portal upload bundle for rhino-lens from a finished `mvn verify`.
 
 Reads groupId, artifactId and version from pom.xml, then writes, under
 target/bundle/<group path>/<artifactId>/<version>/:

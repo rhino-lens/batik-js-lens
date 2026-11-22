@@ -1,7 +1,7 @@
 package org.mozilla.javascript;
 
 /**
- * Internal to batik-js-lens; not part of its API.
+ * Internal to rhino-lens; not part of its API.
  *
  * <p>Lives in Rhino's package (the Rhino jar is not sealed) only to read where the interpreter is:
  * the same package-private method Rhino itself uses for error messages. It changes nothing.

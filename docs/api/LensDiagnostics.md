@@ -24,4 +24,4 @@ Lens.diagnostics().recent().forEach(f -> System.out.println(f));
 | `error()` | `String`: the exception's class and message |
 | `time()` | `Instant` |
 
-Failures are also logged (logger `io.github.rhinolens.lens`, WARNING, rate-limited), added to the current report's `observationFailures()`, and sent to listeners as [ObservationFailure](ObservationFailure.md) events.
+Failures are also logged (logger `io.github.rhinolens`, WARNING, rate-limited), added to the current report's `observationFailures()`, and sent to listeners as [ObservationFailure](ObservationFailure.md) events.

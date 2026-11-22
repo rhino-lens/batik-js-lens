@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/rhino-lens/batik-js-lens/docs/report.schema.json",
-  "title": "batik-js-lens execution report",
+  "$id": "https://github.com/rhino-lens/rhino-lens/docs/report.schema.json",
+  "title": "rhino-lens execution report",
   "description": "LensReport.toJson(): everything observed during one script execution.",
   "type": "object",
   "required": ["executionId", "ruleName", "attributes", "startedAt", "endedAt", "durationNanos", "outcome",

@@ -2,21 +2,21 @@
 
 ## 1. Add the dependency
 
-batik-js-lens runs on Batik 1.7's Rhino, which your project provides. Lens declares Rhino as a `provided` dependency, so adding Lens never puts a second copy of `org.mozilla.javascript` on the classpath.
+rhino-lens runs on Batik 1.7's Rhino, which your project provides. Lens declares Rhino as a `provided` dependency, so adding Lens never puts a second copy of `org.mozilla.javascript` on the classpath.
 
 - **Your project already has Rhino 1.7** (`org.apache.xmlgraphics:batik-js:1.7`, for example through Batik): add only Lens.
-- **It doesn't:** add Lens and `batik-js-lens-base`, a byte-identical rebuild of `batik-js:1.7`.
+- **It doesn't:** add Lens and `io.github.rhino-lens:batik-js:1.7`, a byte-identical rebuild of Apache's jar.
 
 ```xml
 <dependency>
   <groupId>io.github.rhino-lens</groupId>
-  <artifactId>batik-js-lens</artifactId>
-  <version>0.1.0</version>
+  <artifactId>rhino-lens</artifactId>
+  <version>0.2.0</version>
 </dependency>
 <!-- only if the project has no Rhino 1.7 yet: -->
 <dependency>
   <groupId>io.github.rhino-lens</groupId>
-  <artifactId>batik-js-lens-base</artifactId>
+  <artifactId>batik-js</artifactId>
   <version>1.7</version>
 </dependency>
 ```
@@ -63,7 +63,7 @@ Or log everything through `java.util.logging`:
 
 <!-- snippet: logging -->
 ```java
-ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger io.github.rhinolens.lens.changes
+ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger io.github.rhinolens.changes
 Lens.addListener(logger);
 ```
 

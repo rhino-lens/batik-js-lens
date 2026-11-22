@@ -1,6 +1,6 @@
 # Spring
 
-batik-js-lens has no Spring dependency. In a Spring (Boot) application, install it once at startup, before the first script runs, for example from an `ApplicationRunner` bean, a `@PostConstruct` method on a configuration class, or a `SmartInitializingSingleton`:
+rhino-lens has no Spring dependency. In a Spring (Boot) application, install it once at startup, before the first script runs, for example from an `ApplicationRunner` bean, a `@PostConstruct` method on a configuration class, or a `SmartInitializingSingleton`:
 
 <!-- snippet: install -->
 ```java
@@ -33,10 +33,10 @@ Lens.registerService(auditService, "auditService");   // always a service, whate
 
 - **Per request:** wrap rule evaluation in `Lens.observe(...)` or an execution ([getting started](../getting-started.md#as-a-report-per-execution)), and return or store `report.toJson()`.
 - **All executions:** add a `ChangeListener` whose `onExecutionFinished(LensReport)` publishes reports, e.g. to a Spring `ApplicationEventPublisher`, a metrics registry, or a log. Keep it fast: it runs on the script's thread.
-- **Logging:** `JulChangeLogger` logs through `java.util.logging`. Spring Boot routes JUL to its logging system, so set the level of `io.github.rhinolens.lens.changes` in `application.properties`:
+- **Logging:** `JulChangeLogger` logs through `java.util.logging`. Spring Boot routes JUL to its logging system, so set the level of `io.github.rhinolens.changes` in `application.properties`:
 
   ```properties
-  logging.level.io.github.rhinolens.lens.changes=INFO
+  logging.level.io.github.rhinolens.changes=INFO
   ```
 
 ## Threads

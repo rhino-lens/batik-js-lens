@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build, test and bundle batik-js-lens for the Maven Central Portal.
+# Build, test and bundle rhino-lens for the Maven Central Portal.
 # Needs Maven and Java 11+ (JAVA_HOME). Set GPG_KEY (key id or e-mail) to sign.
 # Output: target/central-bundle.zip, to upload at https://central.sonatype.com ("Publish Component").
 set -euo pipefail
