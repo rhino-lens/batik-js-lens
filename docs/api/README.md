@@ -1,6 +1,6 @@
 # API reference
 
-Everything is in package `org.mozilla.javascript.lens`. Javadoc is in the `-javadoc.jar` (build it with `mvn javadoc:javadoc`).
+Everything is in package `io.github.rhinolens.lens`. Javadoc is in the `-javadoc.jar` (build it with `mvn javadoc:javadoc`).
 
 ## Entry point and setup
 
