@@ -1,7 +1,7 @@
 name: Publish Javadoc
 
 # Builds the Javadoc for each release and publishes it to GitHub Pages
-# (enable Pages with source "GitHub Actions"; Pages on a private repository needs a paid plan).
+# (Pages source: "GitHub Actions").
 on:
   release:
     types: [ published ]
@@ -25,6 +25,15 @@ jobs:
           distribution: corretto
           java-version: '21'
           cache: maven
+      # Until batik-js-lens-base is on Maven Central: it is byte-identical to Apache's batik-js 1.7,
+      # so fetch that, verify the SHA-1, and install it under our coordinates.
+      - name: Provide batik-js-lens-base 1.7
+        run: |
+          mvn -B -q dependency:get -Dartifact=org.apache.xmlgraphics:batik-js:1.7 -Dtransitive=false
+          jar=~/.m2/repository/org/apache/xmlgraphics/batik-js/1.7/batik-js-1.7.jar
+          echo "688eb1bf13b7a54491fcb3405068fc5092589884  $jar" | sha1sum -c -
+          mvn -B -q install:install-file -Dfile=$jar -DgroupId=io.github.rhino-lens \
+            -DartifactId=batik-js-lens-base -Dversion=1.7 -Dpackaging=jar
       - name: Build Javadoc
         run: mvn -B javadoc:javadoc
       - uses: actions/upload-pages-artifact@v3
