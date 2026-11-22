@@ -75,7 +75,7 @@ The full report as JSON is in [docs/examples/report-example.json](docs/examples/
 | [EclipseLink](docs/integration/eclipselink.md) · [Spring](docs/integration/spring.md) | Integration guides |
 | [API reference](docs/api/README.md) | Every public type |
 
-Javadoc is built with `mvn javadoc:javadoc` and ships in the `-javadoc.jar`.
+Javadoc: **[rhino-lens.github.io/batik-js-lens](https://rhino-lens.github.io/batik-js-lens/)** (also built with `mvn javadoc:javadoc` and shipped in the `-javadoc.jar`).
 
 ## Compatibility
 
