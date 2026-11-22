@@ -81,7 +81,7 @@ Javadoc: **[rhino-lens.github.io/batik-js-lens](https://rhino-lens.github.io/bat
 
 - **Java 11 or newer** (the library is compiled with `--release 11`).
 - **Rhino:** Batik 1.7's Rhino, which your project provides: [`batik-js-lens-base:1.7`](https://github.com/rhino-lens/batik-js-lens-base) or Apache's identical `org.apache.xmlgraphics:batik-js:1.7`. Lens declares it as `provided`, so it never adds a second copy. It has no other dependencies.
-- **Status:** version `0.1.0`, not yet on Maven Central. To try it, install `batik-js-lens-base` and this library into your local Maven repository (`mvn install`).
+- **Status:** version `0.1.0`, on [Maven Central](https://central.sonatype.com/artifact/io.github.rhino-lens/batik-js-lens).
 
 ```xml
 <dependency>

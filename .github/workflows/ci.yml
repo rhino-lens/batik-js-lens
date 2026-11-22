@@ -1,8 +1,9 @@
 name: CI
 
-# Manual for now: batik-js-lens-base is not on Maven Central yet, so a fresh runner cannot resolve it.
-# Once it is published, add:  push: {branches: [main]}  and  pull_request: {}
 on:
+  push:
+    branches: [ main ]
+  pull_request:
   workflow_dispatch:
 
 jobs:
