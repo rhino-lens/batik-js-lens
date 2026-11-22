@@ -1,0 +1,22 @@
+name: CI
+
+# Manual for now: batik-js-lens-base is not on Maven Central yet, so a fresh runner cannot resolve it.
+# Once it is published, add:  push: {branches: [main]}  and  pull_request: {}
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '11', '17', '21' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Tests, docs checks, javadoc
+        run: mvn -B verify
