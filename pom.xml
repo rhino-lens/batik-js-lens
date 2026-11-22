@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.rhino-lens</groupId>
+  <artifactId>batik-js-lens</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+
+  <name>batik-js-lens</name>
+  <description>
+    Opt-in observability for scripts run on batik-js-lens-base (Batik 1.7's Rhino): which rule and
+    line changed which Java property, old value to new value, which collections and services it
+    touched, with a per-execution report. No Rhino classes are changed.
+  </description>
+  <url>https://github.com/rhino-lens/batik-js-lens</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>Vothla</id>
+      <name>Santhosh Kumar S</name>
+      <url>https://github.com/Vothla</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/rhino-lens/batik-js-lens.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rhino-lens/batik-js-lens.git</developerConnection>
+    <url>https://github.com/rhino-lens/batik-js-lens</url>
+  </scm>
+
+  <properties>
+    <maven.compiler.release>11</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.14.4</junit.version>
+  </properties>
+
+  <dependencies>
+    <!-- Batik 1.7's Rhino, byte-identical; Lens extends its public classes and changes none -->
+    <dependency>
+      <groupId>io.github.rhino-lens</groupId>
+      <artifactId>batik-js-lens-base</artifactId>
+      <version>1.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.27.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.23.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.5.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.5.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.16.0</version>
+        <configuration>
+          <compilerArgs>
+            <arg>-Xlint:all,-serial,-rawtypes,-options</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.6</version>
+        <configuration>
+          <systemPropertyVariables>
+            <lens.updateDocs>${lens.updateDocs}</lens.updateDocs>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.5.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>3.2.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.4.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar-no-fork</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.12.0</version>
+        <configuration>
+          <release>11</release>
+          <excludePackageNames>org.mozilla.javascript</excludePackageNames>
+          <doctitle>batik-js-lens ${project.version} API</doctitle>
+          <windowtitle>batik-js-lens ${project.version} API</windowtitle>
+          <links>
+            <link>https://docs.oracle.com/en/java/javase/11/docs/api/</link>
+          </links>
+          <doclint>all,-missing</doclint>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

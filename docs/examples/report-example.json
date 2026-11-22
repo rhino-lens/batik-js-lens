@@ -1,0 +1,197 @@
+{
+  "executionId": "3f2b9c1e-7d4a-4e8b-9a6f-2c1d5e8f0a47",
+  "ruleName": "pricing-rule",
+  "attributes": {
+    "recordId": 42,
+    "user": "ann"
+  },
+  "startedAt": "2026-11-22T09:30:00Z",
+  "endedAt": "2026-11-22T09:30:00.004800Z",
+  "durationNanos": 4800000,
+  "outcome": "SUCCESS",
+  "error": null,
+  "truncated": false,
+  "stats": {
+    "counts": {
+      "PROPERTY": 2,
+      "COLLECTION": 1,
+      "SERVICE_CALL": 1,
+      "MARK": 1
+    },
+    "serviceCallNanos": 1200000,
+    "overheadNanos": 61000,
+    "suppressed": 0,
+    "dropped": 0
+  },
+  "events": [
+    {
+      "kind": "PROPERTY",
+      "sequence": 0,
+      "ruleName": "pricing-rule.js",
+      "line": 1,
+      "offsetNanos": 100000,
+      "thread": "main",
+      "time": "2026-11-22T09:30:00.000100Z",
+      "target": {
+        "className": "io.github.rhinolens.testapp.Order",
+        "identityHash": "1b6d3586",
+        "entityId": "42",
+        "path": "order",
+        "label": "Order(id=42)"
+      },
+      "property": "status",
+      "via": "SETTER",
+      "oldValue": {
+        "type": "String",
+        "text": "\"NEW\""
+      },
+      "newValue": {
+        "type": "String",
+        "text": "\"PRICED\""
+      }
+    },
+    {
+      "kind": "PROPERTY",
+      "sequence": 1,
+      "ruleName": "pricing-rule.js",
+      "line": 2,
+      "offsetNanos": 800000,
+      "thread": "main",
+      "time": "2026-11-22T09:30:00.000900Z",
+      "target": {
+        "className": "io.github.rhinolens.testapp.Order",
+        "identityHash": "1b6d3586",
+        "entityId": "42",
+        "path": "order",
+        "label": "Order(id=42)"
+      },
+      "property": "finalTotal",
+      "via": "ASSIGNMENT",
+      "oldValue": {
+        "type": "Double",
+        "text": "0.0"
+      },
+      "newValue": {
+        "type": "Double",
+        "text": "35.09"
+      }
+    },
+    {
+      "kind": "COLLECTION",
+      "sequence": 2,
+      "ruleName": "pricing-rule.js",
+      "line": 3,
+      "offsetNanos": 1500000,
+      "thread": "main",
+      "time": "2026-11-22T09:30:00.001400Z",
+      "target": {
+        "className": "java.util.ArrayList",
+        "identityHash": "4554617c",
+        "entityId": null,
+        "path": "order.getItems()",
+        "label": "ArrayList@4554617c"
+      },
+      "method": "add",
+      "args": [
+        {
+          "type": "LineItem",
+          "text": "MUG-RED x2"
+        }
+      ],
+      "sizeBefore": 2,
+      "sizeAfter": 3,
+      "returned": {
+        "type": "Boolean",
+        "text": "true"
+      },
+      "error": null
+    },
+    {
+      "kind": "SERVICE_CALL",
+      "sequence": 3,
+      "ruleName": "pricing-rule.js",
+      "line": 4,
+      "offsetNanos": 2200000,
+      "thread": "main",
+      "time": "2026-11-22T09:30:00.002100Z",
+      "target": {
+        "className": "io.github.rhinolens.testapp.OrderRepository",
+        "identityHash": "74a14482",
+        "entityId": null,
+        "path": "OrderRepository",
+        "label": "OrderRepository@74a14482"
+      },
+      "service": "orderRepository",
+      "method": "save",
+      "args": [
+        {
+          "type": "Order",
+          "text": "Order(id=42)"
+        }
+      ],
+      "result": {
+        "type": "Order",
+        "text": "Order(id=42)"
+      },
+      "error": null,
+      "durationNanos": 1200000
+    },
+    {
+      "kind": "MARK",
+      "sequence": 4,
+      "ruleName": "pricing-rule.js",
+      "line": 5,
+      "offsetNanos": 2900000,
+      "thread": "main",
+      "time": "2026-11-22T09:30:00.003600Z",
+      "label": "pricing done"
+    }
+  ],
+  "netChanges": [
+    {
+      "target": {
+        "className": "io.github.rhinolens.testapp.Order",
+        "identityHash": "1b6d3586",
+        "entityId": "42",
+        "path": "order",
+        "label": "Order(id=42)"
+      },
+      "property": "status",
+      "oldValue": {
+        "type": "String",
+        "text": "\"NEW\""
+      },
+      "newValue": {
+        "type": "String",
+        "text": "\"PRICED\""
+      },
+      "changes": 1,
+      "lines": [
+        1
+      ]
+    },
+    {
+      "target": {
+        "className": "io.github.rhinolens.testapp.Order",
+        "identityHash": "1b6d3586",
+        "entityId": "42",
+        "path": "order",
+        "label": "Order(id=42)"
+      },
+      "property": "finalTotal",
+      "oldValue": {
+        "type": "Double",
+        "text": "0.0"
+      },
+      "newValue": {
+        "type": "Double",
+        "text": "35.09"
+      },
+      "changes": 1,
+      "lines": [
+        2
+      ]
+    }
+  ],
+  "observationFailures": []
+}

@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rhino-lens/batik-js-lens/docs/report.schema.json",
+  "title": "batik-js-lens execution report",
+  "description": "LensReport.toJson(): everything observed during one script execution.",
+  "type": "object",
+  "required": ["executionId", "ruleName", "attributes", "startedAt", "endedAt", "durationNanos", "outcome",
+               "error", "truncated", "stats", "events", "netChanges", "observationFailures"],
+  "properties": {
+    "executionId": { "type": ["string", "null"], "description": "Unique id of the execution; null for an empty report." },
+    "ruleName": { "type": ["string", "null"], "description": "Name given to the execution, else the script name of its first event." },
+    "attributes": { "type": "object", "description": "Attributes given to the execution (numbers and booleans as-is, everything else as text)." },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "endedAt": { "type": ["string", "null"], "format": "date-time", "description": "Null for a RUNNING snapshot." },
+    "durationNanos": { "type": "integer", "minimum": 0 },
+    "outcome": { "enum": ["RUNNING", "SUCCESS", "FAILED", "STOPPED"] },
+    "error": { "type": ["string", "null"], "description": "The script's error when outcome is FAILED." },
+    "truncated": { "type": "boolean", "description": "True if events were dropped at the per-execution limit." },
+    "stats": { "$ref": "#/$defs/stats" },
+    "events": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+    "netChanges": { "type": "array", "items": { "$ref": "#/$defs/netChange" } },
+    "observationFailures": { "type": "array", "items": { "$ref": "#/$defs/failure" } }
+  },
+  "$defs": {
+    "value": {
+      "type": "object",
+      "required": ["type", "text"],
+      "properties": {
+        "type": { "type": ["string", "null"], "description": "Simple type name, e.g. String, Order, js:Object; null if not captured." },
+        "text": { "type": "string", "description": "Rendered value at capture time; strings are quoted." },
+        "captured": { "const": false, "description": "Present (false) only when the value was not read." }
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": ["className", "identityHash", "label"],
+      "properties": {
+        "className": { "type": "string" },
+        "identityHash": { "type": "string", "description": "Hex identity hash: tells instances apart within a run." },
+        "entityId": { "type": ["string", "null"] },
+        "path": { "type": ["string", "null"], "description": "How the script reached the object, e.g. order.getItems().get(0)." },
+        "label": { "type": "string", "description": "Order(id=42) or Order@1b6d3586." }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": ["kind", "sequence", "ruleName", "line", "offsetNanos", "thread", "time"],
+      "properties": {
+        "kind": { "enum": ["PROPERTY", "ARRAY_ELEMENT", "COLLECTION", "SERVICE_CALL", "MARK", "OBSERVATION_FAILURE"] },
+        "sequence": { "type": "integer" },
+        "ruleName": { "type": ["string", "null"] },
+        "line": { "type": "integer" },
+        "offsetNanos": { "type": "integer" },
+        "thread": { "type": "string" },
+        "time": { "type": "string", "format": "date-time" },
+        "target": { "$ref": "#/$defs/target" },
+        "incomplete": { "const": true },
+        "property": { "type": "string", "description": "PROPERTY" },
+        "via": { "enum": ["SETTER", "ASSIGNMENT", "FIELD"], "description": "PROPERTY" },
+        "oldValue": { "$ref": "#/$defs/value", "description": "PROPERTY, ARRAY_ELEMENT" },
+        "newValue": { "$ref": "#/$defs/value", "description": "PROPERTY, ARRAY_ELEMENT" },
+        "index": { "type": "integer", "description": "ARRAY_ELEMENT" },
+        "method": { "type": "string", "description": "COLLECTION, SERVICE_CALL" },
+        "args": { "type": "array", "items": { "$ref": "#/$defs/value" }, "description": "COLLECTION, SERVICE_CALL" },
+        "sizeBefore": { "type": "integer", "description": "COLLECTION" },
+        "sizeAfter": { "type": "integer", "description": "COLLECTION" },
+        "returned": { "oneOf": [{ "$ref": "#/$defs/value" }, { "type": "null" }], "description": "COLLECTION" },
+        "service": { "type": "string", "description": "SERVICE_CALL" },
+        "result": { "oneOf": [{ "$ref": "#/$defs/value" }, { "type": "null" }], "description": "SERVICE_CALL" },
+        "error": { "type": ["string", "null"], "description": "COLLECTION, SERVICE_CALL, OBSERVATION_FAILURE" },
+        "durationNanos": { "type": "integer", "description": "SERVICE_CALL" },
+        "label": { "type": "string", "description": "MARK" },
+        "step": { "type": "string", "description": "OBSERVATION_FAILURE" }
+      }
+    },
+    "netChange": {
+      "type": "object",
+      "required": ["target", "property", "oldValue", "newValue", "changes", "lines"],
+      "properties": {
+        "target": { "$ref": "#/$defs/target" },
+        "property": { "type": "string" },
+        "oldValue": { "$ref": "#/$defs/value" },
+        "newValue": { "$ref": "#/$defs/value" },
+        "changes": { "type": "integer", "minimum": 1 },
+        "lines": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "required": ["counts", "serviceCallNanos", "overheadNanos", "suppressed", "dropped"],
+      "properties": {
+        "counts": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "serviceCallNanos": { "type": "integer" },
+        "overheadNanos": { "type": "integer" },
+        "suppressed": { "type": "integer" },
+        "dropped": { "type": "integer" }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "required": ["step", "ruleName", "line", "error", "time"],
+      "properties": {
+        "step": { "type": "string" },
+        "ruleName": { "type": ["string", "null"] },
+        "line": { "type": "integer" },
+        "error": { "type": "string" },
+        "time": { "type": "string" }
+      }
+    }
+  }
+}
