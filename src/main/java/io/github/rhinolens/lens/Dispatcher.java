@@ -9,20 +9,31 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 final class Dispatcher {
 
-    private static final List<ChangeListener> LISTENERS = new CopyOnWriteArrayList<>();
+    /** A listener and its step name for failure reports (built once, not per event). */
+    private static final class Entry {
+        final ChangeListener listener;
+        final String step;
+
+        Entry(ChangeListener listener) {
+            this.listener = listener;
+            this.step = "listener " + listener.getClass().getName();
+        }
+    }
+
+    private static final List<Entry> LISTENERS = new CopyOnWriteArrayList<>();
     private static final ThreadLocal<boolean[]> IN_FAILURE = ThreadLocal.withInitial(() -> new boolean[1]);
 
     private Dispatcher() {
     }
 
-    static void add(ChangeListener listener) {
-        if (listener != null && !LISTENERS.contains(listener)) {
-            LISTENERS.add(listener);
+    static synchronized void add(ChangeListener listener) {
+        if (listener != null && LISTENERS.stream().noneMatch(e -> e.listener == listener)) {
+            LISTENERS.add(new Entry(listener));
         }
     }
 
-    static void remove(ChangeListener listener) {
-        LISTENERS.remove(listener);
+    static synchronized void remove(ChangeListener listener) {
+        LISTENERS.removeIf(e -> e.listener == listener);
     }
 
     static void clear() {
@@ -41,8 +52,8 @@ final class Dispatcher {
             }
             Guard.enter();
             try {
-                for (ChangeListener l : LISTENERS) {
-                    LensSafe.run("listener " + l.getClass().getName(), () -> l.onEvent(e));
+                for (Entry l : LISTENERS) {
+                    LensSafe.run(l.step, () -> l.listener.onEvent(e));
                 }
             } finally {
                 Guard.exit();
@@ -57,8 +68,8 @@ final class Dispatcher {
             }
             Guard.enter();
             try {
-                for (ChangeListener l : LISTENERS) {
-                    LensSafe.run("listener " + l.getClass().getName(), () -> l.onExecutionFinished(report));
+                for (Entry l : LISTENERS) {
+                    LensSafe.run(l.step, () -> l.listener.onExecutionFinished(report));
                 }
             } finally {
                 Guard.exit();
@@ -81,9 +92,9 @@ final class Dispatcher {
             try {
                 ObservationFailure event = new ObservationFailure(
                         new ScriptPosition(f.ruleName(), f.line()), f.step(), f.error());
-                for (ChangeListener l : LISTENERS) {
+                for (Entry l : LISTENERS) {
                     try {
-                        l.onEvent(event);
+                        l.listener.onEvent(event);
                     } catch (Throwable ignored) {
                         // a listener failing on a failure report is not reported again
                     }

@@ -2,6 +2,7 @@ package io.github.rhinolens.lens;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /** Minimal JSON writer for maps, lists, strings, numbers, booleans and null (no dependencies). */
@@ -21,6 +22,8 @@ final class Json {
             out.append("null");
         } else if (v instanceof String) {
             string((String) v, out);
+        } else if (isNonFinite(v)) {
+            string(String.valueOf(v), out); // NaN / Infinity are not valid JSON numbers
         } else if (v instanceof Number || v instanceof Boolean) {
             out.append(v);
         } else if (v instanceof Map) {
@@ -61,6 +64,11 @@ final class Json {
         }
     }
 
+    private static boolean isNonFinite(Object v) {
+        return (v instanceof Double && !Double.isFinite((Double) v))
+                || (v instanceof Float && !Float.isFinite((Float) v));
+    }
+
     private static void pad(StringBuilder out, int indent) {
         for (int i = 0; i < indent; i++) {
             out.append("  ");
@@ -79,7 +87,7 @@ final class Json {
                 case '\t': out.append("\\t"); break;
                 default:
                     if (c < 0x20) {
-                        out.append(String.format("\\u%04x", (int) c));
+                        out.append(String.format(Locale.ROOT, "\\u%04x", (int) c));
                     } else {
                         out.append(c);
                     }

@@ -46,11 +46,14 @@
   </properties>
 
   <dependencies>
-    <!-- Batik 1.7's Rhino, byte-identical; Lens extends its public classes and changes none -->
+    <!-- Batik 1.7's Rhino, byte-identical; Lens extends its public classes and changes none.
+         "provided": the application brings its own Rhino 1.7 jar (batik-js-lens-base or Apache's
+         identical org.apache.xmlgraphics:batik-js:1.7), so Lens never adds a second copy. -->
     <dependency>
       <groupId>io.github.rhino-lens</groupId>
       <artifactId>batik-js-lens-base</artifactId>
       <version>1.7</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

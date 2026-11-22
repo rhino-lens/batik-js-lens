@@ -3,6 +3,7 @@ package io.github.rhinolens.lens;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -76,6 +77,6 @@ public final class ServiceCall extends ChangeEvent {
     String describe() {
         return "SERVICE " + service + "." + method + args
                 + (error != null ? " threw " + error : " -> " + result)
-                + " in " + String.format("%.3f ms", durationNanos / 1e6);
+                + " in " + String.format(Locale.ROOT, "%.3f ms", durationNanos / 1e6);
     }
 }

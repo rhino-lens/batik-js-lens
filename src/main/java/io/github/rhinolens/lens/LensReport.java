@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -220,16 +221,16 @@ public final class LensReport {
      * value, how many changes, which lines. In order of first change.
      */
     public List<NetChange> netChanges() {
-        Map<String, List<ChangeEvent>> groups = new LinkedHashMap<>();
+        Map<MemberKey, List<ChangeEvent>> groups = new LinkedHashMap<>();
         for (ChangeEvent e : events) {
-            String key = null;
+            String member = null;
             if (e instanceof PropertyChange) {
-                key = e.target().className() + "@" + e.target().identityHash() + "." + ((PropertyChange) e).property();
+                member = "." + ((PropertyChange) e).property();
             } else if (e instanceof ArrayElementChange) {
-                key = e.target().className() + "@" + e.target().identityHash() + "[" + ((ArrayElementChange) e).index() + "]";
+                member = "[" + ((ArrayElementChange) e).index() + "]";
             }
-            if (key != null) {
-                groups.computeIfAbsent(key, k -> new ArrayList<>()).add(e);
+            if (member != null && e.target() != null) {
+                groups.computeIfAbsent(new MemberKey(e.target(), member), k -> new ArrayList<>()).add(e);
             }
         }
         List<NetChange> out = new ArrayList<>();
@@ -292,7 +293,7 @@ public final class LensReport {
     public String toText() {
         StringBuilder out = new StringBuilder();
         out.append("Lens report: ").append(ruleName == null ? "(unnamed)" : ruleName).append(' ')
-                .append(outcome).append(" in ").append(String.format("%.3f ms", durationMillis()))
+                .append(outcome).append(" in ").append(String.format(Locale.ROOT, "%.3f ms", durationMillis()))
                 .append(", ").append(changeCount()).append(" changes, ")
                 .append(stats.count(ChangeEvent.Kind.SERVICE_CALL)).append(" service calls");
         if (error != null) {
@@ -321,6 +322,31 @@ public final class LensReport {
     @Override
     public String toString() {
         return toText();
+    }
+
+    /** One property (or array element) of one object; objects compared by identity (see {@link TargetRef}). */
+    private static final class MemberKey {
+        private final TargetRef target;
+        private final String member;
+
+        MemberKey(TargetRef target, String member) {
+            this.target = target;
+            this.member = member;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof MemberKey)) {
+                return false;
+            }
+            MemberKey other = (MemberKey) o;
+            return member.equals(other.member) && target.sameObjectAs(other.target);
+        }
+
+        @Override
+        public int hashCode() {
+            return (target.className().hashCode() * 31 + target.identityHash()) * 31 + member.hashCode();
+        }
     }
 
     private static Map<String, Object> stringKeys(Map<String, Object> attrs) {

@@ -43,7 +43,7 @@ public final class LensScriptApi {
     public double elapsedMillis() {
         return LensSafe.call("script-elapsed", () -> {
             LensExecution x = ExecutionTracker.current();
-            return x == null ? 0.0 : x.report().durationMillis();
+            return x == null ? 0.0 : x.elapsedNanos() / 1e6;
         }, 0.0);
     }
 

@@ -30,7 +30,7 @@ final class Values {
     /** Reference to {@code javaObject} reached by {@code path} (may be null). */
     static TargetRef target(Object javaObject, String path) {
         return LensSafe.call("target", () -> new TargetRef(javaObject.getClass().getName(),
-                System.identityHashCode(javaObject), idOf(javaObject), path),
+                System.identityHashCode(javaObject), idOf(javaObject), path, javaObject),
                 new TargetRef(String.valueOf(javaObject == null ? null : javaObject.getClass().getName()), 0, null, path));
     }
 

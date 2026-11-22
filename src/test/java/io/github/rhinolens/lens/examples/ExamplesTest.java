@@ -109,12 +109,44 @@ class ExamplesTest {
             ctx.setOptimizationLevel(9);
 
             // snippet: session-integration
+            Lens.start(ruleName, attributes);
+            try {
+                result = ctx.evaluateString(scope, script, ruleName, 1, null);
+            } finally {
+                LensReport report = Lens.finish();   // never throws; null when Lens is off
+                if (report != null) {
+                    reports.add(report);             // or save report.toJson()
+                }
+            }
+            // end-snippet
+        } finally {
+            Context.exit();
+        }
+        assertThat(result).isNotNull();
+        assertThat(reports.get(0).propertyChanges()).hasSize(1);
+        assertThat(reports.get(0).ruleName()).isEqualTo("discount-rule.js");
+    }
+
+    @Test
+    void executionObject() {
+        List<LensReport> reports = new ArrayList<>();
+        Order order = new Order(42);
+        String ruleName = "discount-rule.js";
+        String script = "order.setStatus('DISCOUNTED');";
+        Map<String, Object> attributes = Map.of("recordId", order.getId());
+        Object result;
+        Context ctx = Context.enter();
+        try {
+            Scriptable scope = ctx.initStandardObjects();
+            scope.put("order", scope, order);
+            ctx.setOptimizationLevel(9);
+
+            // snippet: execution-object
             LensExecution execution = Lens.execution(ruleName, attributes);
             try {
                 result = ctx.evaluateString(scope, script, ruleName, 1, null);
-                execution.succeeded();
             } catch (RuntimeException e) {
-                execution.failed(e);
+                execution.failed(e);                  // outcome FAILED, with the error
                 throw e;
             } finally {
                 LensReport report = execution.finish();   // never throws
@@ -125,8 +157,8 @@ class ExamplesTest {
             Context.exit();
         }
         assertThat(result).isNotNull();
+        assertThat(reports.get(0).outcome()).isEqualTo(LensReport.Outcome.SUCCESS);
         assertThat(reports.get(0).propertyChanges()).hasSize(1);
-        assertThat(reports.get(0).ruleName()).isEqualTo("discount-rule.js");
     }
 
     @Test

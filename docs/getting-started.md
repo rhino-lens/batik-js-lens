@@ -2,13 +2,22 @@
 
 ## 1. Add the dependency
 
-batik-js-lens depends on `batik-js-lens-base` (Batik 1.7's Rhino) and nothing else. If your project uses `org.apache.xmlgraphics:batik-js:1.7`, replace it, or exclude it where another library pulls it in, so only one copy of `org.mozilla.javascript` is on the classpath.
+batik-js-lens runs on Batik 1.7's Rhino, which your project provides. Lens declares Rhino as a `provided` dependency, so adding Lens never puts a second copy of `org.mozilla.javascript` on the classpath.
+
+- **Your project already has Rhino 1.7** (`org.apache.xmlgraphics:batik-js:1.7`, for example through Batik): add only Lens.
+- **It doesn't:** add Lens and `batik-js-lens-base`, a byte-identical rebuild of `batik-js:1.7`.
 
 ```xml
 <dependency>
   <groupId>io.github.rhino-lens</groupId>
   <artifactId>batik-js-lens</artifactId>
   <version>0.1.0</version>
+</dependency>
+<!-- only if the project has no Rhino 1.7 yet: -->
+<dependency>
+  <groupId>io.github.rhino-lens</groupId>
+  <artifactId>batik-js-lens-base</artifactId>
+  <version>1.7</version>
 </dependency>
 ```
 
@@ -75,24 +84,24 @@ System.out.println(report.durationMillis() + " ms, " + report.serviceCalls().siz
 String json = report.toJson();                  // store it anywhere
 ```
 
-If your code already has a method that runs rules (enter a Context, build the scope, `evaluateString`), wrap the evaluation in an execution instead. The rest of the method stays as it is:
+If your code already has a method that runs rules (enter a Context, build the scope, `evaluateString`), mark the start and end of the evaluation instead. The rest of the method stays as it is:
 
 <!-- snippet: session-integration -->
 ```java
-LensExecution execution = Lens.execution(ruleName, attributes);
+Lens.start(ruleName, attributes);
 try {
     result = ctx.evaluateString(scope, script, ruleName, 1, null);
-    execution.succeeded();
-} catch (RuntimeException e) {
-    execution.failed(e);
-    throw e;
 } finally {
-    LensReport report = execution.finish();   // never throws
-    reports.add(report);                      // or save report.toJson()
+    LensReport report = Lens.finish();   // never throws; null when Lens is off
+    if (report != null) {
+        reports.add(report);             // or save report.toJson()
+    }
 }
 ```
 
-`finish()` never throws, and the report exists even when the script failed (outcome `FAILED`, with the script's error).
+`start` and `finish` never throw, and do nothing when Lens is off (`finish()` then returns `null`). To mark a failed rule as `FAILED` with its error, call `Lens.finish(e)` in a `catch` block instead. If a `finish()` is ever skipped (say, an exception path without `finally`), the next `start()` closes that run as `STOPPED` and logs a warning naming the line that opened it, so runs never pile up on pooled threads.
+
+Prefer an object you hold? `Lens.execution(ruleName, attributes)` returns a [`LensExecution`](api/LensExecution.md) to finish yourself (it is `AutoCloseable`).
 
 ### Inside the script
 

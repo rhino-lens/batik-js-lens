@@ -1,5 +1,6 @@
 package io.github.rhinolens.lens;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 public final class InMemoryJournal implements ChangeListener {
 
     private final int maxPerThread;
-    private final ThreadLocal<List<ChangeEvent>> events = ThreadLocal.withInitial(ArrayList::new);
+    private final ThreadLocal<ArrayDeque<ChangeEvent>> events = ThreadLocal.withInitial(ArrayDeque::new);
 
     /** At most 100,000 events per thread. */
     public InMemoryJournal() {
@@ -38,11 +39,11 @@ public final class InMemoryJournal implements ChangeListener {
         if (event instanceof ObservationFailure) {
             return;
         }
-        List<ChangeEvent> list = events.get();
-        if (list.size() >= maxPerThread) {
-            list.remove(0);
+        ArrayDeque<ChangeEvent> queue = events.get();
+        if (queue.size() >= maxPerThread) {
+            queue.pollFirst(); // constant time, however full
         }
-        list.add(event);
+        queue.addLast(event);
     }
 
     /** This thread's events, oldest first, without clearing them. */

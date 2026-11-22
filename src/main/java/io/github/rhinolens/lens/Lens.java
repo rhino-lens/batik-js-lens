@@ -138,9 +138,91 @@ public final class Lens {
      * joins it. {@code ruleName} may be null (the script name from the first event is used).
      */
     public static LensExecution execution(String ruleName, Map<String, ?> attributes) {
-        LensExecution x = new LensExecution(ruleName, attributes);
+        LensExecution x = LensSafe.call("execution", () -> open(ruleName, attributes, false), null);
+        return x != null ? x : detached(ruleName);
+    }
+
+    /**
+     * Marks the start of a script run on this thread; {@link #finish()} marks its end and returns
+     * its report. Nothing to keep in between:
+     *
+     * <pre>{@code
+     * Lens.start(ruleName);
+     * try {
+     *     result = cx.evaluateString(scope, script, ruleName, 1, null);
+     * } finally {
+     *     LensReport report = Lens.finish();   // null when Lens is off
+     * }
+     * }</pre>
+     *
+     * Does nothing when Lens is not installed or is disabled. Runs nest: a {@code start} inside
+     * work started earlier opens an inner run. If an earlier run's {@code finish()} was skipped
+     * (its method has returned), the next {@code start} closes it as
+     * {@link LensReport.Outcome#STOPPED} and flags it in {@link #diagnostics()}. Never throws.
+     */
+    public static void start(String ruleName) {
+        start(ruleName, null);
+    }
+
+    /** Same as {@link #start(String)}, with attributes for the report (e.g. a record id). */
+    public static void start(String ruleName, Map<String, ?> attributes) {
+        LensSafe.run("start", () -> {
+            if (wrapping()) {
+                open(ruleName, attributes, true);
+            }
+        });
+    }
+
+    /**
+     * Ends the newest run opened by {@link #start} on this thread and returns its report
+     * ({@link LensReport.Outcome#SUCCESS}), or {@code null} if there is none (for example because
+     * Lens is off). Never throws.
+     */
+    public static LensReport finish() {
+        return finish(null);
+    }
+
+    /**
+     * Same as {@link #finish()}, but with {@code error} non-null the run is marked
+     * {@link LensReport.Outcome#FAILED} with that error (use it in a {@code catch} block).
+     */
+    public static LensReport finish(Throwable error) {
+        return LensSafe.call("finish", () -> {
+            LensExecution x = ExecutionTracker.lastStarted();
+            if (x == null) {
+                return null;
+            }
+            if (error != null) {
+                x.failed(error);
+            }
+            return x.finish();
+        }, null);
+    }
+
+    /** Opens an execution on this thread, first closing any forgotten ones. */
+    private static LensExecution open(String ruleName, Map<String, ?> attributes, boolean viaStart) {
+        CallSite site = CallSite.ofCaller();
+        ExecutionTracker.closeForgotten(site);
+        LensExecution x = new LensExecution(ruleName, attributes, viaStart, site);
         ExecutionTracker.push(x);
         return x;
+    }
+
+    /** For {@link LensContextFactory}: an automatic execution around one top-level evaluation. */
+    static LensExecution automaticExecution() {
+        LensExecution x = new LensExecution(null, null);
+        ExecutionTracker.push(x);
+        return x;
+    }
+
+    /** Fallback when opening failed: a working execution that is not tracked, so it records nothing. */
+    private static LensExecution detached(String ruleName) {
+        try {
+            return new LensExecution(ruleName, null);
+        } catch (Throwable t) {
+            LensDiagnostics.flag("execution-detached", t);
+            return new LensExecution(null, null);
+        }
     }
 
     /**

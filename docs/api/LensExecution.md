@@ -1,15 +1,14 @@
 # LensExecution
 
-`public final class LensExecution implements AutoCloseable`: one named script execution on the current thread. Everything Lens observes on this thread while it's open joins it. Create it with `Lens.execution(ruleName, attributes)`.
+`public final class LensExecution implements AutoCloseable`: one named script execution on the current thread. Everything Lens observes on this thread while it's open joins it. Create it with `Lens.execution(ruleName, attributes)` when you want an object to hold; [`Lens.start` / `Lens.finish`](Lens.md) do the same with nothing to hold.
 
-<!-- snippet: session-integration -->
+<!-- snippet: execution-object -->
 ```java
 LensExecution execution = Lens.execution(ruleName, attributes);
 try {
     result = ctx.evaluateString(scope, script, ruleName, 1, null);
-    execution.succeeded();
 } catch (RuntimeException e) {
-    execution.failed(e);
+    execution.failed(e);                  // outcome FAILED, with the error
     throw e;
 } finally {
     LensReport report = execution.finish();   // never throws

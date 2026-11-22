@@ -22,7 +22,7 @@ final class LensContextFactory extends ContextFactory {
     @Override
     protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
         LensExecution auto = LensSafe.call("auto-execution",
-                () -> Lens.wrapping() && ExecutionTracker.current() == null ? Lens.execution(null, null) : null, null);
+                () -> Lens.wrapping() && ExecutionTracker.current() == null ? Lens.automaticExecution() : null, null);
         if (auto == null) {
             return super.doTopCall(callable, cx, scope, thisObj, args);
         }

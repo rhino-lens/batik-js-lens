@@ -30,7 +30,10 @@ Lens.install();
 
 | Method | Returns | Notes |
 |---|---|---|
-| `execution(String ruleName, Map<String, ?> attributes)` | `LensExecution` | Opens an execution on this thread. Everything observed on the thread until `finish()` joins it. `ruleName` may be null (the script name of the first event is used); `attributes` may be null. |
+| `start(String ruleName)` / `start(String ruleName, Map<String, ?> attributes)` | — | Marks the start of a run on this thread; nothing to hold. Does nothing when Lens is not installed or is disabled. Runs nest: a `start` deeper inside another run's work opens an inner run. If an earlier run's `finish()` was skipped (the method that started it has returned), this closes it as `STOPPED` and flags `execution-not-finished` in `diagnostics()`. Costs about 9 µs with `finish()`. |
+| `finish()` | `LensReport` or null | Ends the newest run opened by `start` on this thread and returns its report (`SUCCESS`); `null` if there is none, for example because Lens is off. |
+| `finish(Throwable error)` | `LensReport` or null | Same, marking the run `FAILED` with `error` (when non-null). |
+| `execution(String ruleName, Map<String, ?> attributes)` | `LensExecution` | Opens an execution on this thread and returns it to finish yourself. Everything observed on the thread until `finish()` joins it. `ruleName` may be null (the script name of the first event is used); `attributes` may be null. Never throws (if opening fails, the failure is flagged and an untracked execution is returned). Forgotten ones are closed like `start`'s. |
 | `observe(String ruleName, Map<String, ?> attributes, Supplier<T> work)` | `LensResult<T>` | Runs `work` as one execution. If `work` throws, the execution is marked failed, its report becomes `lastReport()`, and the exception is rethrown unchanged. |
 | `currentExecution()` | `LensExecution` or null | The innermost open execution on this thread. |
 | `lastReport()` | `LensReport` or null | The last execution finished on this thread. |

@@ -49,13 +49,37 @@ public final class LensExecution implements AutoCloseable {
     private String error;
     private LensReport finalReport;
 
+    /** Opened by {@link Lens#start}, so {@link Lens#finish()} may close it. */
+    private final boolean viaStart;
+    /** Where it was opened (null for automatic executions); used to close forgotten ones. */
+    private final CallSite site;
+
     LensExecution(String name, Map<String, ?> attributes) {
+        this(name, attributes, false, null);
+    }
+
+    LensExecution(String name, Map<String, ?> attributes, boolean viaStart, CallSite site) {
         this.name = name;
         Map<String, Object> copy = new LinkedHashMap<>();
         if (attributes != null) {
             copy.putAll(attributes);
         }
         this.attributes = Collections.unmodifiableMap(copy);
+        this.viaStart = viaStart;
+        this.site = site;
+    }
+
+    boolean viaStart() {
+        return viaStart;
+    }
+
+    CallSite site() {
+        return site;
+    }
+
+    /** Time since it started, without building a report. */
+    long elapsedNanos() {
+        return System.nanoTime() - startNanos;
     }
 
     /** Unique id of this execution (also on each of its events). */

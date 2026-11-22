@@ -1,6 +1,11 @@
 package io.github.rhinolens.lens;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /** Per-thread stack of open executions, and the last finished report. All methods are failure-safe. */
 final class ExecutionTracker {
@@ -21,6 +26,51 @@ final class ExecutionTracker {
 
     static void push(LensExecution x) {
         LensSafe.run("execution-start", () -> OPEN.get().addLast(x));
+    }
+
+    /**
+     * Before opening an execution at {@code now}: closes, as {@link LensReport.Outcome#STOPPED},
+     * every open execution whose opening method has already returned (its {@code finish()} was
+     * never called), and flags each one so the missing {@code finish()} can be fixed.
+     */
+    static void closeForgotten(CallSite now) {
+        if (now == null) {
+            return;
+        }
+        LensSafe.run("close-forgotten", () -> {
+            List<LensExecution> open = new ArrayList<>(OPEN.get());
+            if (open.isEmpty()) {
+                return; // the usual case: nothing to check, no stack walk
+            }
+            Set<String> callers = CallSite.callersOfCaller();
+            Collections.reverse(open); // newest first, as the stack would have unwound
+            for (LensExecution x : open) {
+                CallSite site = x.site();
+                if (site != null && !site.isStillRunning(now, callers)) {
+                    x.stopped();
+                    x.finish();
+                    LensDiagnostics.flag("execution-not-finished", new IllegalStateException(
+                            "execution '" + x.name() + "' opened at " + site
+                                    + " was never finished; closed as STOPPED (call finish() in a finally block)"));
+                }
+            }
+        });
+    }
+
+    /** The newest open execution opened by {@link Lens#start}, or {@code null}. */
+    static LensExecution lastStarted() {
+        try {
+            Iterator<LensExecution> it = OPEN.get().descendingIterator();
+            while (it.hasNext()) {
+                LensExecution x = it.next();
+                if (x.viaStart()) {
+                    return x;
+                }
+            }
+            return null;
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     static void remove(LensExecution x) {
