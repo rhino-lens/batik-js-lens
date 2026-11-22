@@ -40,7 +40,7 @@ Capture.afterAssignment(before, value);                                // 3. obs
 ## How failures are reported
 
 1. **Counted per step,** with the last 50 kept, in `Lens.diagnostics()` (example below).
-2. **Logged** through `java.util.logging` (logger `io.github.rhinolens.lens`, level WARNING) the first time per step, then at 10, 100, 1000, … occurrences, so logs aren't flooded.
+2. **Logged** through `java.util.logging` (logger `org.mozilla.javascript.lens`, level WARNING) the first time per step, then at 10, 100, 1000, … occurrences, so logs aren't flooded.
 3. **Added to the current execution's report** under `observationFailures`.
 4. **Sent to listeners** as an `ObservationFailure` event (`step`, `error`, rule, line). If a listener fails while handling one, that failure is ignored rather than reported again, so reporting can't loop.
 

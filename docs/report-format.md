@@ -51,7 +51,7 @@ lens.mark('pricing done');
       "thread": "main",
       "time": "2026-11-22T09:30:00.000100Z",
       "target": {
-        "className": "io.github.rhinolens.testapp.Order",
+        "className": "example.app.Order",
         "identityHash": "1b6d3586",
         "entityId": "42",
         "path": "order",
@@ -77,7 +77,7 @@ lens.mark('pricing done');
       "thread": "main",
       "time": "2026-11-22T09:30:00.000900Z",
       "target": {
-        "className": "io.github.rhinolens.testapp.Order",
+        "className": "example.app.Order",
         "identityHash": "1b6d3586",
         "entityId": "42",
         "path": "order",
@@ -133,7 +133,7 @@ lens.mark('pricing done');
       "thread": "main",
       "time": "2026-11-22T09:30:00.002100Z",
       "target": {
-        "className": "io.github.rhinolens.testapp.OrderRepository",
+        "className": "example.app.OrderRepository",
         "identityHash": "74a14482",
         "entityId": null,
         "path": "OrderRepository",
@@ -168,7 +168,7 @@ lens.mark('pricing done');
   "netChanges": [
     {
       "target": {
-        "className": "io.github.rhinolens.testapp.Order",
+        "className": "example.app.Order",
         "identityHash": "1b6d3586",
         "entityId": "42",
         "path": "order",
@@ -190,7 +190,7 @@ lens.mark('pricing done');
     },
     {
       "target": {
-        "className": "io.github.rhinolens.testapp.Order",
+        "className": "example.app.Order",
         "identityHash": "1b6d3586",
         "entityId": "42",
         "path": "order",

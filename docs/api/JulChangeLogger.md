@@ -1,10 +1,10 @@
 # JulChangeLogger
 
-`public final class JulChangeLogger implements ChangeListener`: logs every event as one line, and every finished execution as a summary (`LensReport.toText()`), through `java.util.logging` with the logger `io.github.rhinolens.lens.changes`.
+`public final class JulChangeLogger implements ChangeListener`: logs every event as one line, and every finished execution as a summary (`LensReport.toText()`), through `java.util.logging` with the logger `org.mozilla.javascript.lens.changes`.
 
 <!-- snippet: logging -->
 ```java
-ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger io.github.rhinolens.lens.changes
+ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger org.mozilla.javascript.lens.changes
 Lens.addListener(logger);
 ```
 

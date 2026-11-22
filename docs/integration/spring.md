@@ -33,10 +33,10 @@ Lens.registerService(auditService, "auditService");   // always a service, whate
 
 - **Per request:** wrap rule evaluation in `Lens.observe(...)` or an execution ([getting started](../getting-started.md#as-a-report-per-execution)), and return or store `report.toJson()`.
 - **All executions:** add a `ChangeListener` whose `onExecutionFinished(LensReport)` publishes reports, e.g. to a Spring `ApplicationEventPublisher`, a metrics registry, or a log. Keep it fast: it runs on the script's thread.
-- **Logging:** `JulChangeLogger` logs through `java.util.logging`. Spring Boot routes JUL to its logging system, so set the level of `io.github.rhinolens.lens.changes` in `application.properties`:
+- **Logging:** `JulChangeLogger` logs through `java.util.logging`. Spring Boot routes JUL to its logging system, so set the level of `org.mozilla.javascript.lens.changes` in `application.properties`:
 
   ```properties
-  logging.level.io.github.rhinolens.lens.changes=INFO
+  logging.level.org.mozilla.javascript.lens.changes=INFO
   ```
 
 ## Threads

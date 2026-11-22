@@ -124,7 +124,9 @@
         <version>3.12.0</version>
         <configuration>
           <release>11</release>
-          <excludePackageNames>org.mozilla.javascript</excludePackageNames>
+          <sourceFileExcludes>
+            <sourceFileExclude>org/mozilla/javascript/LensAccess.java</sourceFileExclude>
+          </sourceFileExcludes>
           <doctitle>batik-js-lens ${project.version} API</doctitle>
           <windowtitle>batik-js-lens ${project.version} API</windowtitle>
           <links>

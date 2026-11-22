@@ -54,7 +54,7 @@ Or log everything through `java.util.logging`:
 
 <!-- snippet: logging -->
 ```java
-ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger io.github.rhinolens.lens.changes
+ChangeListener logger = new JulChangeLogger(Level.INFO);   // logger org.mozilla.javascript.lens.changes
 Lens.addListener(logger);
 ```
 
